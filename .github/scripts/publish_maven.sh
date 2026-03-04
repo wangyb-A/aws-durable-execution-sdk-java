@@ -12,7 +12,7 @@ trap 'echo "Cleaning up settings.xml..."; rm -f "${SETTINGS_FILE}"' EXIT
 printenv
 
 echo "=== Step 1: Import GPG private key ==="
-printf '%s' "${env.MVN_GPG_KEYS_GPGPRIVATEKEY}" | gpg --batch --import
+printf '%s' "${MVN_GPG_KEYS_GPGPRIVATEKEY}" | gpg --batch --import
 echo "GPG key imported successfully."
 
 echo "=== Step 2: Write minimal settings.xml ==="
