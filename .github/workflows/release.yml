@@ -41,10 +41,6 @@ jobs:
             parse-json-secrets: true
 
       - name: Sign and publish
-        run: bash .github/scripts/publish-maven.sh
+        run: bash .github/scripts/publish_maven.sh
         env:
-          GPG_PRIVATE_KEY: ${{ env.MVN_GPG_KEYS_GPGPrivateKey }}
-          GPG_PASSPHRASE: ${{ env.MVN_GPG_KEYS_PASSPHRASE }}
-          MAVEN_USERNAME: ${{ env.MVN_ACCOUNT_KEYS_USERNAME }}
-          MAVEN_PASSWORD: ${{ env.MVN_ACCOUNT_KEYS_PASSWORD }}
           RELEASE_VERSION: "1.0.0"
