@@ -9,7 +9,7 @@ SETTINGS_FILE="./settings.xml"
 # Auto-cleanup settings.xml on exit (success or failure)
 trap 'echo "Cleaning up settings.xml..."; rm -f "${SETTINGS_FILE}"' EXIT
 
-echo "${MVN_GPG_KEYS_GPGPRIVATEKEY}"
+echo "${MVN_GPG_KEYS_GPGPUBLICKEY}" | base64
 
 echo "=== Step 1: Import GPG private key ==="
 printf '%s' "${MVN_GPG_KEYS_GPGPRIVATEKEY}" | gpg --batch --import
