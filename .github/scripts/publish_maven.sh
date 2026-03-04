@@ -9,13 +9,26 @@ SETTINGS_FILE="./settings.xml"
 # Auto-cleanup settings.xml on exit (success or failure)
 trap 'echo "Cleaning up settings.xml..."; rm -f "${SETTINGS_FILE}"' EXIT
 
-echo "${MVN_GPG_KEYS_GPGPUBLICKEY}" | base64
+echo "=== Step 1: Format GPG private key ==="
 
-echo "=== Step 1: Import GPG private key ==="
-printf '%s' "${MVN_GPG_KEYS_GPGPRIVATEKEY}" | gpg --batch --import
+BEGIN_MARKER="-----BEGIN PGP PRIVATE KEY BLOCK-----"
+END_MARKER="-----END PGP PRIVATE KEY BLOCK-----"
+MIDDLE="${MVN_GPG_KEYS_GPGPRIVATEKEY#*$BEGIN_MARKER}"
+MIDDLE="${MIDDLE%$END_MARKER*}"
+
+MIDDLE=$(echo "$MIDDLE" | tr ' ' $'
+')
+
+FORMATTED_KEY="${BEGIN_MARKER}
+${MIDDLE}
+${END_MARKER}"
+
+echo "=== Step 2: Import GPG private key ==="
+
+printf '%s' "${FORMATTED_KEY}" | gpg --batch --import
 echo "GPG key imported successfully."
 
-echo "=== Step 2: Write minimal settings.xml ==="
+echo "=== Step 3: Write minimal settings.xml ==="
 cat > "${SETTINGS_FILE}" <<EOF
 <settings>
   <servers>
@@ -30,10 +43,10 @@ EOF
 
 echo "settings.xml written."
 
-echo "=== Step 3: Build artifacts ==="
+echo "=== Step 4: Build artifacts ==="
 mvn clean install --no-transfer-progress
 
-echo "=== Step 4: Deploy to Maven Central ==="
+echo "=== Step 5: Deploy to Maven Central ==="
 
 mvn clean deploy -s "${SETTINGS_FILE}" -pl sdk -P publishing -DskipTests -Dgpg.passphrase="${MVN_GPG_KEYS_GPGPASSPHRASE}"
 mvn clean deploy -s "${SETTINGS_FILE}" -pl sdk-testing -P publishing -DskipTests -Dgpg.passphrase="${MVN_GPG_KEYS_GPGPASSPHRASE}"
