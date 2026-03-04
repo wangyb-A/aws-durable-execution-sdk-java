@@ -9,7 +9,7 @@ SETTINGS_FILE="./settings.xml"
 # Auto-cleanup settings.xml on exit (success or failure)
 trap 'echo "Cleaning up settings.xml..."; rm -f "${SETTINGS_FILE}"' EXIT
 
-echo "${RELEASE_VERSION}"
+printenv
 
 echo "=== Step 1: Import GPG private key ==="
 printf '%s' "${env.MVN_GPG_KEYS_GPGPRIVATEKEY}" | gpg --batch --import
@@ -21,8 +21,8 @@ cat > "${SETTINGS_FILE}" <<EOF
   <servers>
     <server>
       <id>central</id>
-      <username>${env.MVN_ACCOUNT_KEYS_USERNAME}</username>
-      <password>${env.MVN_ACCOUNT_KEYS_PASSWORD}</password>
+      <username>${MVN_ACCOUNT_KEYS_USERNAME}</username>
+      <password>${MVN_ACCOUNT_KEYS_PASSWORD}</password>
     </server>
   </servers>
 </settings>
@@ -35,7 +35,7 @@ mvn clean install --no-transfer-progress
 
 echo "=== Step 4: Deploy to Maven Central ==="
 
-mvn clean deploy -s "${SETTINGS_FILE}" -pl sdk -P publishing -DskipTests -Dgpg.passphrase="${env.MVN_GPG_KEYS_GPGPASSPHRASE}"
-mvn clean deploy -s "${SETTINGS_FILE}" -pl sdk-testing -P publishing -DskipTests -Dgpg.passphrase="${env.MVN_GPG_KEYS_GPGPASSPHRASE}"
+mvn clean deploy -s "${SETTINGS_FILE}" -pl sdk -P publishing -DskipTests -Dgpg.passphrase="${MVN_GPG_KEYS_GPGPASSPHRASE}"
+mvn clean deploy -s "${SETTINGS_FILE}" -pl sdk-testing -P publishing -DskipTests -Dgpg.passphrase="${MVN_GPG_KEYS_GPGPASSPHRASE}"
 
 echo "=== Release ${RELEASE_VERSION} published successfully! ==="
