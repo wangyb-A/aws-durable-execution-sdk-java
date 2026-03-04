@@ -5,6 +5,9 @@ on:
     types: [published]
   workflow_dispatch:
 
+env:
+  AWS_REGION: us-west-2
+
 permissions:
   contents: read
   id-token: write
