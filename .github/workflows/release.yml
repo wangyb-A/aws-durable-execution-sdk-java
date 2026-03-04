@@ -3,6 +3,7 @@ name: Publish to Maven Central
 on:
   release:
     types: [published]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -43,4 +44,4 @@ jobs:
           GPG_PASSPHRASE: ${{ env.MVN_GPG_KEYS_PASSPHRASE }}
           MAVEN_USERNAME: ${{ env.MVN_ACCOUNT_KEYS_USERNAME }}
           MAVEN_PASSWORD: ${{ env.MVN_ACCOUNT_KEYS_PASSWORD }}
-          RELEASE_VERSION: ${{ github.event.release.tag_name }}
+          RELEASE_VERSION: "1.0.0"
