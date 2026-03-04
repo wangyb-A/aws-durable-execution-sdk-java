@@ -44,11 +44,11 @@ EOF
 echo "settings.xml written."
 
 echo "=== Step 4: Build artifacts ==="
-mvn clean install --no-transfer-progress
+mvn clean install -q --no-transfer-progress
 
 echo "=== Step 5: Deploy to Maven Central ==="
 
-mvn clean deploy -s "${SETTINGS_FILE}" -pl sdk -P publishing -DskipTests -Dgpg.passphrase="${MVN_GPG_KEYS_GPGPASSPHRASE}"
-mvn clean deploy -s "${SETTINGS_FILE}" -pl sdk-testing -P publishing -DskipTests -Dgpg.passphrase="${MVN_GPG_KEYS_GPGPASSPHRASE}"
+mvn clean deploy -q -s "${SETTINGS_FILE}" -pl sdk -P publishing -DskipTests -Dgpg.passphrase="${MVN_GPG_KEYS_GPGPASSPHRASE}"
+mvn clean deploy -q -s "${SETTINGS_FILE}" -pl sdk-testing -P publishing -DskipTests -Dgpg.passphrase="${MVN_GPG_KEYS_GPGPASSPHRASE}"
 
 echo "=== Release ${RELEASE_VERSION} published successfully! ==="
