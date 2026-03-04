@@ -9,6 +9,8 @@ SETTINGS_FILE="./settings.xml"
 # Auto-cleanup settings.xml on exit (success or failure)
 trap 'echo "Cleaning up settings.xml..."; rm -f "${SETTINGS_FILE}"' EXIT
 
+echo "${env.MVN_ACCOUNT_KEYS_USERNAME}"
+
 echo "=== Step 1: Import GPG private key ==="
 printf '%s' "${env.MVN_GPG_KEYS_GPGPRIVATEKEY}" | gpg --batch --import
 echo "GPG key imported successfully."
