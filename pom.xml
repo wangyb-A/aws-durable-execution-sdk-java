@@ -238,11 +238,11 @@
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
+                                 <configuration>
+                                    <signer>bc</signer>
+                                </configuration>
                             </execution>
                         </executions>
-                        <configuration>
-                            <signer>bc</signer>
-                        </configuration>
                     </plugin>
                     <plugin>
                         <groupId>org.sonatype.central</groupId>
