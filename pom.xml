@@ -242,7 +242,7 @@
                         </executions>
                         <configuration>
                             <gpgArguments>
-                                <arg>--no-use-agent</arg>
+                                <arg>--batch</arg>
                             </gpgArguments>
                         </configuration>
                     </plugin>
