@@ -44,7 +44,7 @@ EOF
 echo "settings.xml written."
 
 echo "=== Step 4: Build artifacts ==="
-mvn clean install -q -Dorg.slf4j.simpleLogger.defaultLogLevel=warn
+mvn clean install -q -Dlog4j2.level=WARN -Dlog4j.configurationFile=log4j2-quiet.xml
 
 echo "=== Step 5: Deploy to Maven Central ==="
 
