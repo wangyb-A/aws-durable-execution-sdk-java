@@ -16,6 +16,9 @@ on:
 permissions:
   contents: write
 
+env:
+  AWS_REGION: us-west-2
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -55,6 +58,25 @@ jobs:
           name: Release v${{ github.event.inputs.release_version }}
           generate_release_notes: true
 
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: "${{ secrets.ACTIONS_SECRET_ROLE_NAME }}"
+          role-session-name: mavenreleasesession
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Get Env variables
+        uses: aws-actions/aws-secretsmanager-get-secrets@v2
+        with:
+            secret-ids: |
+                mvn_gpg_keys
+                mvn_account_keys
+            parse-json-secrets: true
+      - name: Sign and publish
+        run: bash .github/scripts/publish_maven.sh
+        env:
+          RELEASE_VERSION: ${{ github.event.inputs.release_version }}
+
       - name: Set next development version
         run: mvn -q versions:set -DnewVersion=${{ github.event.inputs.next_version }} -DgenerateBackupPoms=false
 
@@ -63,7 +85,7 @@ jobs:
           git config user.email "${{ github.actor }}+github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
           git add .
-          git commit -m "chore: release version ${{ github.event.inputs.next_version }}"
+          git commit -m "chore: bump version to ${{ github.event.inputs.next_version }}"
       
       - name: Push changes
         uses: ad-m/github-push-action@master
