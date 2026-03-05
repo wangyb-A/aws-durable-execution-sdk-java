@@ -28,13 +28,20 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
+  
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'corretto'
           cache: maven
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: "${{ secrets.ACTIONS_SECRET_ROLE_NAME }}"
+          role-session-name: mavenreleasesession
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Set release version
         run: mvn -q versions:set -DnewVersion=${{ github.event.inputs.release_version }} -DgenerateBackupPoms=false
@@ -57,14 +64,7 @@ jobs:
           tag_name: v${{ github.event.inputs.release_version }}
           name: Release v${{ github.event.inputs.release_version }}
           generate_release_notes: true
-
-      - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v6
-        with:
-          role-to-assume: "${{ secrets.ACTIONS_SECRET_ROLE_NAME }}"
-          role-session-name: mavenreleasesession
-          aws-region: ${{ env.AWS_REGION }}
-
+      
       - name: Get Env variables
         uses: aws-actions/aws-secretsmanager-get-secrets@v2
         with:
@@ -72,6 +72,7 @@ jobs:
                 mvn_gpg_keys
                 mvn_account_keys
             parse-json-secrets: true
+          
       - name: Sign and publish
         run: bash .github/scripts/publish_maven.sh
         env:
@@ -91,5 +92,3 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-
-
