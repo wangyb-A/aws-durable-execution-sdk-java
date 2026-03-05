@@ -58,6 +58,9 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: build mvn
+        run: mvn clean install -q -Dlog4j2.level=WARN -Dlog4j.configurationFile=log4j2-quiet.xml --no-transfer-progress
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -65,6 +68,11 @@ jobs:
           tag_name: v${{ github.event.inputs.release_version }}
           name: Release v${{ github.event.inputs.release_version }}
           generate_release_notes: true
+          files: |
+            sdk/target/aws-durable-execution-sdk-java-${{ github.event.inputs.release_version }}.jar
+            sdk-testing/target/aws-durable-execution-sdk-java-testing-${{ github.event.inputs.release_version }}.jar
+            sdk-integration-tests/target/aws-durable-execution-sdk-java-integration-tests-${{ github.event.inputs.release_version }}.jar
+            examples/target/aws-durable-execution-sdk-java-examples-${{ github.event.inputs.release_version }}.jar
       
       - name: Get Env variables
         uses: aws-actions/aws-secretsmanager-get-secrets@v2
