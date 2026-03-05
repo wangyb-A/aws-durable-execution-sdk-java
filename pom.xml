@@ -241,11 +241,8 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <useAgent>false</useAgent>
                             <gpgArguments>
-                                <arg>--pinentry-mode</arg>
-                                <arg>loopback</arg>
-                                <arg>--no-tty</arg>
+                                <arg>--no-use-agent</arg>
                             </gpgArguments>
                         </configuration>
                     </plugin>
