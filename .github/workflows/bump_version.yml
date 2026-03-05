@@ -38,9 +38,15 @@ jobs:
 
       - name: Commit release version
         run: |
+          git config user.email "${{ github.actor }}+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
           git add .
           git commit -m "chore: release version ${{ github.event.inputs.release_version }}"
-          git push origin HEAD
+      
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -52,10 +58,16 @@ jobs:
       - name: Set next development version
         run: mvn -q versions:set -DnewVersion=${{ github.event.inputs.next_version }} -DgenerateBackupPoms=false
 
-      - name: Commit next development version
+      - name: Commit release version
         run: |
+          git config user.email "${{ github.actor }}+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
           git add .
-          git commit -m "chore: bump version to ${{ github.event.inputs.next_version }}"
-          git push origin HEAD
+          git commit -m "chore: release version ${{ github.event.inputs.next_version }}"
+      
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
 
