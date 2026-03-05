@@ -23,6 +23,8 @@ FORMATTED_KEY="${BEGIN_MARKER}
 ${MIDDLE}
 ${END_MARKER}"
 
+MAVEN_GPG_PASSPHRASE="${MVN_GPG_KEYS_GPGPASSPHRASE}"
+
 echo "=== Step 2: Import GPG private key ==="
 
 printf '%s' "${FORMATTED_KEY}" | gpg --batch --import
@@ -44,11 +46,11 @@ EOF
 echo "settings.xml written."
 
 echo "=== Step 4: Build artifacts ==="
-mvn clean install -q -Dlog4j2.level=WARN -Dlog4j.configurationFile=log4j2-quiet.xml
+mvn clean install -q -Dlog4j2.level=WARN -Dlog4j.configurationFile=log4j2-quiet.xml --no-transfer-progress
 
 echo "=== Step 5: Deploy to Maven Central ==="
 
-mvn clean deploy -s "${SETTINGS_FILE}" -pl sdk -P publishing -DskipTests -Dgpg.passphrase="${MVN_GPG_KEYS_GPGPASSPHRASE}"
-mvn clean deploy -s "${SETTINGS_FILE}" -pl sdk-testing -P publishing -DskipTests -Dgpg.passphrase="${MVN_GPG_KEYS_GPGPASSPHRASE}"
+mvn clean deploy -s "${SETTINGS_FILE}" -pl sdk -P publishing -DskipTests
+mvn clean deploy -s "${SETTINGS_FILE}" -pl sdk-testing -P publishing -DskipTests
 
 echo "=== Release ${RELEASE_VERSION} published successfully! ==="
