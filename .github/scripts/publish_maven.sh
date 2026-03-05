@@ -24,7 +24,7 @@ ${MIDDLE}
 ${END_MARKER}"
 
 MAVEN_GPG_PASSPHRASE="${MVN_GPG_KEYS_GPGPASSPHRASE}"
-GPG_TTY=$(tty)
+export GPG_TTY=$(tty)
 
 echo "=== Step 2: Import GPG private key ==="
 
