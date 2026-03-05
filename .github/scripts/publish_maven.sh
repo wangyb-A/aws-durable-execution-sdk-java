@@ -50,7 +50,7 @@ mvn clean install -q -Dlog4j2.level=WARN -Dlog4j.configurationFile=log4j2-quiet.
 
 echo "=== Step 5: Deploy to Maven Central ==="
 
-mvn clean deploy -s "${SETTINGS_FILE}" -pl sdk -P publishing -DskipTests --no-transfer-progress -Dgpg.useagent=false
-mvn clean deploy -s "${SETTINGS_FILE}" -pl sdk-testing -P publishing -DskipTests --no-transfer-progress -Dgpg.useagent=false
+mvn clean deploy -s "${SETTINGS_FILE}" -pl sdk -P publishing -DskipTests --no-transfer-progress
+mvn clean deploy -s "${SETTINGS_FILE}" -pl sdk-testing -P publishing -DskipTests --no-transfer-progress
 
 echo "=== Release ${RELEASE_VERSION} published successfully! ==="

@@ -240,6 +240,9 @@
                                 </goals>
                             </execution>
                         </executions>
+                        <configuration>
+                            <useAgent>false</useAgent>
+                        </configuration>
                     </plugin>
                     <plugin>
                         <groupId>org.sonatype.central</groupId>
