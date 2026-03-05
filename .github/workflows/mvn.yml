@@ -1,0 +1,52 @@
+
+name: Maven Release manual
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  id-token: write
+
+env:
+  AWS_REGION: us-west-2
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+  
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'corretto'
+          cache: maven
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: "${{ secrets.ACTIONS_SECRET_ROLE_NAME }}"
+          role-session-name: mavenreleasesession
+          aws-region: ${{ env.AWS_REGION }}
+      
+      - name: Get Env variables
+        uses: aws-actions/aws-secretsmanager-get-secrets@v2
+        with:
+            secret-ids: |
+                mvn_gpg_keys
+                mvn_account_keys
+            parse-json-secrets: true
+          
+      - name: Sign and publish
+        run: bash .github/scripts/publish_maven.sh
+        env:
+          RELEASE_VERSION: 1.0.0
+
+      - name: Set next development version
+        run: mvn -q versions:set -DnewVersion=${{ github.event.inputs.next_version }} -DgenerateBackupPoms=false
