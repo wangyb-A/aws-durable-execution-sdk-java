@@ -241,9 +241,7 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <gpgArguments>
-                                <arg>--batch</arg>
-                            </gpgArguments>
+                            <signer>bc</signer>
                         </configuration>
                     </plugin>
                     <plugin>

@@ -19,18 +19,13 @@ MIDDLE="${MIDDLE%$END_MARKER*}"
 MIDDLE=$(echo "$MIDDLE" | tr ' ' $'
 ')
 
-FORMATTED_KEY="${BEGIN_MARKER}
+MAVEN_GPG_KEY="${BEGIN_MARKER}
 ${MIDDLE}
 ${END_MARKER}"
 
 MAVEN_GPG_PASSPHRASE="${MVN_GPG_KEYS_GPGPASSPHRASE}"
 
-echo "=== Step 2: Import GPG private key ==="
-
-printf '%s' "${FORMATTED_KEY}" | gpg --batch --import
-echo "GPG key imported successfully."
-
-echo "=== Step 3: Write minimal settings.xml ==="
+echo "=== Step 2: Write minimal settings.xml ==="
 cat > "${SETTINGS_FILE}" <<EOF
 <settings>
   <servers>
@@ -45,10 +40,10 @@ EOF
 
 echo "settings.xml written."
 
-echo "=== Step 4: Build artifacts ==="
+echo "=== Step 3: Build artifacts ==="
 mvn clean install -q -Dlog4j2.level=WARN -Dlog4j.configurationFile=log4j2-quiet.xml --no-transfer-progress
 
-echo "=== Step 5: Deploy to Maven Central ==="
+echo "=== Step 4: Deploy to Maven Central ==="
 
 mvn clean deploy -s "${SETTINGS_FILE}" -pl sdk -P publishing -DskipTests --no-transfer-progress
 mvn clean deploy -s "${SETTINGS_FILE}" -pl sdk-testing -P publishing -DskipTests --no-transfer-progress
